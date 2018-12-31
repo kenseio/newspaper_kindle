@@ -4,6 +4,7 @@
 import time
 from PIL import Image
 from robobrowser import RoboBrowser
+import gc
 
 
 # 画像の下処理。サイズを小さくして、グレースケールにする。クオリティは変えない
@@ -25,13 +26,12 @@ def image_process(img_src, img_path):
             rate = 1
         # print(str(rate))
         size = (int(im.size[0] * rate), int(im.size[1] * rate))
-        new_im = im.resize(size).convert('L')
+        new_img = im.resize(size).convert('L')
         # print(new_im.format, new_im.size, new_im.mode)
-        new_im.save(img_path)
+        new_img.save(img_path)
 
     except:
         print('/---Warning:画像読み込みできなかったよ')
-
 
 if __name__ == '__main__':
     print("このコードはインポートして使ってね。")

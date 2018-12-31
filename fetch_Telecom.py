@@ -211,7 +211,7 @@ toc.write('</ul>\n')
 # 目次を更新
 print('/---目次挿入中')
 s = '<!DOCTYPE html>\n' \
-    '<html lang="en">\n ' \
+    '<html lang="ja">\n ' \
     '<head>\n ' \
     '<meta charset="utf-8">\n ' \
     '<title>' + ppr_name + '</title>\n' \
@@ -233,21 +233,21 @@ with open(path, mode='w') as html:
 with open(path, mode='a') as html:
     html.write('</body>\n</html>')
 
-# kindlegenでmobiに変換
-print('/---mobiファイル作成中')
-res = subprocess.run(['kindlegen', path])
+# pandocでdocxに変換
+print('/---docxファイル作成中')
+res = subprocess.run(['pandoc', path, '-o', root + ppr_name + '.docx'])
 
 # Kindleへメールで送る
 subject = ppr_name
 body = "kindleへ送信"
-filename = ppr_name + '.mobi'
-filepath = path.replace('.html', '.mobi')
-mine = {'type': 'application', 'subtype': 'mobi'}
+filename = ppr_name + '.docx'
+filepath = path.replace('.html', '.docx')
+mine = {'type': 'application', 'subtype': 'vnd.openxmlformats-officedocument.wordprocessingml.document'}
 attach_file = {'name': filename, 'path': filepath}
 print('/---メール送信中：' + ppr_name)
 
 msg = create_message(gmail_id, kindle_add, subject, body, mine, attach_file)
-# send_gmail(gmail_id, kindle_add, msg)
+send_gmail(gmail_id, kindle_add, msg)
 
 # ログアウト
 br.open('https://trade.03trade.com/web/cmnCauSysLgoAction.do')
@@ -257,7 +257,7 @@ print(prompt)
 
 # 不要ファイルを削除する
 print('/---不要ファイル削除中')
-delete_html(path)
-delete_toc(root)
+# delete_html(path)
+# delete_toc(root)
 
 print('/---処理を終了しました。')

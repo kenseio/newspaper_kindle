@@ -140,7 +140,7 @@ for SectionURL in lstSectionURL:
                     img_name = '{:0=4}'.format(img_cnt) + '.jpg'
                     img_path = root + img_name
                     image_process(strImgSrc, img_path)
-                    html.write('<img src="' + img_name + '">\n')
+                    html.write('<img src="' + root + img_name + '">\n')
                     time.sleep(0.2)
                 else:
                     print('/---Note:画像無かったよ')
@@ -172,7 +172,7 @@ for SectionURL in lstSectionURL:
                     img_name = '{:0=4}'.format(img_cnt) + '.jpg'
                     img_path = root + img_name
                     image_process(strImgSrc, img_path)
-                    html.write('<img src="' + img_name + '">\n')
+                    html.write('<img src="' + root + img_name + '">\n')
                     time.sleep(0.2)
 
                 elif objElm.name == 'span' and objElm['class'][0] == 'article__caption':
@@ -226,26 +226,25 @@ with open(path, mode='w') as html:
 with open(path, mode='a') as html:
     html.write('</body>\n</html>')
 
-# kindlegenでmobiに変換
-print('/---mobiファイル作成中')
-res = subprocess.run(['kindlegen', path])
-# ToDo: HTMLファイル保存先調整
+# pandocでdocxに変換
+print('/---docxファイル作成中')
+res = subprocess.run(['pandoc', path, '-o', root + ppr_name + '.docx'])
 
 # Kindleへメールで送る
 subject = ppr_name
 body = "kindleへ送信"
-filename = ppr_name + '.mobi'
-filepath = path.replace('.html', '.mobi')
-mine = {'type': 'application', 'subtype': 'mobi'}
+filename = ppr_name + '.docx'
+filepath = path.replace('.html', '.docx')
+mine = {'type': 'application', 'subtype': 'vnd.openxmlformats-officedocument.wordprocessingml.document'}
 attach_file = {'name': filename, 'path': filepath}
 print('/---メール送信中：' + ppr_name)
 
 msg = create_message(gmail_id, kindle_add, subject, body, mine, attach_file)
-# send_gmail(gmail_id, kindle_add, msg)
+send_gmail(gmail_id, kindle_add, msg)
 
 # 今回実行日時をファイルに書き込む
 fileLastDate = open('LastSubmitDate_AsiaNikkei.txt', 'w')
-# dtLastDate = fileLastDate.write(str(datetime.datetime.now()))
+dtLastDate = fileLastDate.write(str(datetime.datetime.now()))
 fileLastDate.close()
 print('/---今回実行日時は：' + str(datetime.datetime.now()))
 
