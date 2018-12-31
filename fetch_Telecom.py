@@ -32,7 +32,7 @@ ppr_tpl = ('NKM', 'NSS', 'NRS', 'NKL')
 ppr_bfr = 0
 
 # 設定項目4:ファイルの保存フォルダを指定
-root = '../store_Telecom/'
+root = '/home/ubuntu/newspaper/store_Telecom/'
 
 # 設定項目5:GmailのID
 gmail_id = data['gmail_id']
@@ -215,10 +215,9 @@ s = '<!DOCTYPE html>\n' \
     '<head>\n ' \
     '<meta charset="utf-8">\n ' \
     '<title>' + ppr_name + '</title>\n' \
-    '<link rel="stylesheet" type="text/css" href="../news_paper_code_new/style.css">\n' \
+    '<link rel="stylesheet" type="text/css" href="../newspaper_kindle/style.css>\n' \
     '</head>\n' \
     '<body>\n'
-# ToDo: CSSリンク先調整
 
 with open(root + 'toc.txt') as toc:
     s = s + toc.read()
@@ -236,8 +235,7 @@ with open(path, mode='a') as html:
 
 # kindlegenでmobiに変換
 print('/---mobiファイル作成中')
-res = subprocess.run(['kindlegen', '/Users/kensei/Dropbox/store_Telecom/' + ppr_name + '.html'])
-# ToDo: HTMLファイル保存先調整
+res = subprocess.run(['kindlegen', path])
 
 # Kindleへメールで送る
 subject = ppr_name
@@ -258,8 +256,8 @@ prompt = br.find('h3', class_='function_name').text.encode('shift-jis').decode('
 print(prompt)
 
 # 不要ファイルを削除する
-# print('/---不要ファイル削除中')
-# delete_html(path)
-# delete_toc(root)
+print('/---不要ファイル削除中')
+delete_html(path)
+delete_toc(root)
 
 print('/---処理を終了しました。')

@@ -17,7 +17,7 @@ from delete_files import delete_html, delete_toc, delete_img
 with open('secret.json') as sf:
     data = json.load(sf)
 
-root = '../store_AsiaNikkei/'
+root = '/home/ubuntu/newspaper/store_AsiaNikkei/'
 
 # 設定項目1:見出しページをリストに格納
 lstSectionURL = ['/Editor-s-Picks/', '/Business/', '/Economy/', '/Politics/']
@@ -208,10 +208,9 @@ s = '<!DOCTYPE html>\n' \
     '<head>\n ' \
     '<meta charset="utf-8">\n ' \
     '<title>' + ppr_name + '</title>\n' \
-    '<link rel="stylesheet" type="text/css" href="../news_paper_code_new/style.css">\n' \
+    '<link rel="stylesheet" type="text/css" href="../newspaper_kindle/style.css">\n' \
     '</head>\n' \
     '<body>\n'
-# ToDo: CSSリンク先調整
 
 with open(root + 'toc.txt') as toc:
     s = s + toc.read()
@@ -229,7 +228,7 @@ with open(path, mode='a') as html:
 
 # kindlegenでmobiに変換
 print('/---mobiファイル作成中')
-res = subprocess.run(['kindlegen', '/Users/kensei/Dropbox/store_AsiaNikkei/' + ppr_name + '.html'])
+res = subprocess.run(['kindlegen', path])
 # ToDo: HTMLファイル保存先調整
 
 # Kindleへメールで送る
@@ -242,11 +241,11 @@ attach_file = {'name': filename, 'path': filepath}
 print('/---メール送信中：' + ppr_name)
 
 msg = create_message(gmail_id, kindle_add, subject, body, mine, attach_file)
-send_gmail(gmail_id, kindle_add, msg)
+# send_gmail(gmail_id, kindle_add, msg)
 
 # 今回実行日時をファイルに書き込む
 fileLastDate = open('LastSubmitDate_AsiaNikkei.txt', 'w')
-dtLastDate = fileLastDate.write(str(datetime.datetime.now()))
+# dtLastDate = fileLastDate.write(str(datetime.datetime.now()))
 fileLastDate.close()
 print('/---今回実行日時は：' + str(datetime.datetime.now()))
 
