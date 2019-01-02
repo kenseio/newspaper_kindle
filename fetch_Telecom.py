@@ -215,7 +215,7 @@ s = '<!DOCTYPE html>\n' \
     '<head>\n ' \
     '<meta charset="utf-8">\n ' \
     '<title>' + ppr_name + '</title>\n' \
-    '<link rel="stylesheet" type="text/css" href="../newspaper_kindle/style.css>\n' \
+    '<link rel="stylesheet" type="text/css" href="../newspaper_kindle/style.css">\n' \
     '</head>\n' \
     '<body>\n'
 
@@ -257,7 +257,7 @@ print(prompt)
 
 # 不要ファイルを削除する
 print('/---不要ファイル削除中')
-# delete_html(path)
-# delete_toc(root)
+delete_html(path)
+delete_toc(root)
 
 print('/---処理を終了しました。')
