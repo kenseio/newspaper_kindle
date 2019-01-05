@@ -2,19 +2,19 @@
 # -*- coding: utf-8 -*-
 
 import re
-import time
 import datetime
 import json
 from pytz import timezone
 from robobrowser import RoboBrowser
 import subprocess
+import gc
 
 from pil_for_kindle import image_process
 from send_from_gmail import create_message, send_gmail
 from delete_files import delete_html, delete_toc, delete_img
 
 
-with open('secret.json') as sf:
+with open('/home/ubuntu/newspaper/newspaper_kindle/secret.json') as sf:
     data = json.load(sf)
 
 root = '/home/ubuntu/newspaper/store_AsiaNikkei/'
@@ -39,7 +39,7 @@ img_cnt = 0
 link_cnt = 0
 
 # 前回実行日時を読み込む
-fileLastDate = open('LastSubmitDate_AsiaNikkei.txt', 'r')
+fileLastDate = open('/home/ubuntu/newspaper/newspaper_kindle/LastSubmitDate_AsiaNikkei.txt', 'r')
 strLastDate = fileLastDate.read()
 dtLastDate = datetime.datetime.strptime(strLastDate[0:19], '%Y-%m-%d %H:%M:%S').astimezone(timezone('Asia/Tokyo'))
 fileLastDate.close()
@@ -91,7 +91,7 @@ for SectionURL in lstSectionURL:
     toc.write('<ul>\n')
     html.write('<div style="page-break-after:always;"></div>\n')
 
-    # 記事日付が前回実行日時より新しいものを読み込んで、mdに書き出し。
+    # 記事日付が前回実行日時より新しいものを読み込んで、htmlに書き出し。
     for j in range(len(lstDt)):
         print("/---" + str(j + 1) + "個目の記事を処理します")
         print("/---記事日付：" + str(lstDt[j]))
@@ -120,12 +120,12 @@ for SectionURL in lstSectionURL:
             strTopic = br.find('span', class_='article__topic').text.strip()
             strDate = br.find('div', class_='article__details').find('time').text
             strDate = re.sub(r"\n|  ", '', strDate).strip()
-            html.write('<div class="date">' + strDate + ' | ' + strTopic + '</div>\n')
+            html.write('<h5>' + strDate + ' | ' + strTopic + '</h5>\n')
 
             # サブタイトル
             try:
                 strSubtitle = br.find('p', class_='article__sub-title').text
-                html.write('<div class="subtitle">' + strSubtitle + '</div>\n')
+                html.write('<h4>' + strSubtitle + '</h4>\n')
             except:
                 print('/---Note:サブタイトル無かった')
 
@@ -141,7 +141,7 @@ for SectionURL in lstSectionURL:
                     img_path = root + img_name
                     image_process(strImgSrc, img_path)
                     html.write('<img src="' + root + img_name + '">\n')
-                    time.sleep(0.2)
+
                 else:
                     print('/---Note:画像無かったよ')
             except:
@@ -153,7 +153,7 @@ for SectionURL in lstSectionURL:
                 if objImgCpt.parent['class'][0] in ['article', 'article__content']:
                     strImgCpt = objImgCpt.text
                     strImgCpt = re.sub(r"\t|\n|\xa0|\xa9|  ", '', strImgCpt).strip()
-                    html.write('<div class=caption">' + strImgCpt + '</div>\n')
+                    html.write('<h6">' + strImgCpt + '</h6>\n')
                 else:
                     print('/---Note:画像説明文無かったよ')
             except:
@@ -173,12 +173,11 @@ for SectionURL in lstSectionURL:
                     img_path = root + img_name
                     image_process(strImgSrc, img_path)
                     html.write('<img src="' + root + img_name + '">\n')
-                    time.sleep(0.2)
 
                 elif objElm.name == 'span' and objElm['class'][0] == 'article__caption':
                     strImgCpt = objElm.text
                     strImgCpt = re.sub(r"\t|\n|\xa0|\xa9|  ", '', strImgCpt).strip()
-                    html.write('<div class="caption">' + strImgCpt + '</div>\n')
+                    html.write('<h6>' + strImgCpt + '</h6>\n')
 
             # author
             try:
@@ -226,9 +225,15 @@ with open(path, mode='w') as html:
 with open(path, mode='a') as html:
     html.write('</body>\n</html>')
 
+# メモリ管理
+del br
+del toc
+del html
+gc.collect()
+
 # pandocでdocxに変換
 print('/---docxファイル作成中')
-res = subprocess.run(['pandoc', path, '-o', root + ppr_name + '.docx'])
+res = subprocess.run(['pandoc', path, '-o', root + ppr_name + '.docx', '--reference-doc=/home/ubuntu/newspaper/reference/reference.docx'])
 
 # Kindleへメールで送る
 subject = ppr_name
@@ -243,7 +248,7 @@ msg = create_message(gmail_id, kindle_add, subject, body, mine, attach_file)
 send_gmail(gmail_id, kindle_add, msg)
 
 # 今回実行日時をファイルに書き込む
-fileLastDate = open('LastSubmitDate_AsiaNikkei.txt', 'w')
+fileLastDate = open('/home/ubuntu/newspaper/newspaper_kindle/LastSubmitDate_AsiaNikkei.txt', 'w')
 dtLastDate = fileLastDate.write(str(datetime.datetime.now()))
 fileLastDate.close()
 print('/---今回実行日時は：' + str(datetime.datetime.now()))

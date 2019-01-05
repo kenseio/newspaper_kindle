@@ -4,7 +4,7 @@
 import requests
 import json
 
-with open('secret.json') as sf:
+with open('/home/ubuntu/newspaper/newspaper_kindle/secret.json') as sf:
     data = json.load(sf)
 
 token = data['line_token']

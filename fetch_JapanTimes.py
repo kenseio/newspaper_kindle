@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import re
-import time
 import datetime
 import json
 from robobrowser import RoboBrowser
@@ -13,7 +12,7 @@ from pil_for_kindle import image_process
 from send_from_gmail import create_message, send_gmail
 from delete_files import delete_html, delete_toc, delete_img
 
-with open('secret.json') as sf:
+with open('/home/ubuntu/newspaper/newspaper_kindle/secret.json') as sf:
     data = json.load(sf)
 
 root = '/home/ubuntu/newspaper/store_JapanTimes/'
@@ -38,7 +37,7 @@ img_cnt = 0
 link_cnt = 0
 
 # 前回実行日時を読み込む
-fileLastDate = open('LastSubmitDate_JapanTimes.txt', 'r')
+fileLastDate = open('/home/ubuntu/newspaper/newspaper_kindle/LastSubmitDate_JapanTimes.txt', 'r')
 dtLastDate = fileLastDate.read()
 fileLastDate.close()
 print("/---" + str(dtLastDate) + "以降に更新された記事を読み込みます")
@@ -131,7 +130,7 @@ for strSectionUrl in lstSectionURL:
             # 記事日時と見出し
             dtDate = datetime.datetime.strptime(dtArticleDate[0:19], '%Y-%m-%d %H:%M:%S')
             strDate = datetime.datetime.strftime(dtDate, '%B %d, %Y  %H:%M:%S')
-            html.write('<div class="date">' + strDate + ' | ' + strCntnt + '</div>\n')
+            html.write('<h5">' + strDate + ' | ' + strCntnt + '</h5>\n')
 
             # 画像
             try:
@@ -141,14 +140,13 @@ for strSectionUrl in lstSectionURL:
                 img_path = root + img_name
                 image_process(strImgSrc, img_path)
                 html.write('<img src="' + root + img_name + '">\n')
-                time.sleep(0.2)
             except:
                 pass
 
             # 画像説明文
             try:
                 strImgCpt = objArticle.find('figure').find('figcaption').text
-                html.write('<div class=caption">' + strImgCpt + '</div>\n')
+                html.write('<h6">' + strImgCpt + '</h6>\n')
             except:
                 pass
 
@@ -176,6 +174,19 @@ for strSectionUrl in lstSectionURL:
         else:
             print("/---処理をスキップします")
             continue
+
+    # メモリ管理
+    try:
+        del objSect
+        del objHgroup
+        del objArticle
+        del objBody
+        del objElm
+
+    except:
+        pass
+
+    gc.collect()
 
     # ---- 見出し毎の繰り返しここまで
     toc.write('</ul>\n')
@@ -210,13 +221,14 @@ with open(path, mode='a') as html:
     html.write('</body>\n</html>')
 
 # メモリ管理
+del br
 del toc
 del html
 gc.collect()
 
 # pandocでdocxに変換
 print('/---docxファイル作成中')
-res = subprocess.run(['pandoc', path, '-o', root + ppr_name + '.docx'])
+res = subprocess.run(['pandoc', path, '-o', root + ppr_name + '.docx', '--reference-doc=/home/ubuntu/newspaper/reference/reference.docx'])
 
 # Kindleへメールで送る
 subject = ppr_name
@@ -231,7 +243,7 @@ msg = create_message(gmail_id, kindle_add, subject, body, mine, attach_file)
 send_gmail(gmail_id, kindle_add, msg)
 
 # 今回実行日時をファイルに書き込む
-fileLastDate = open('LastSubmitDate_JapanTimes.txt', 'w')
+fileLastDate = open('/home/ubuntu/newspaper/newspaper_kindle/LastSubmitDate_JapanTimes.txt', 'w')
 dtLastDate = fileLastDate.write(str(datetime.datetime.now()))
 fileLastDate.close()
 print('/---今回実行日時は：' + str(datetime.datetime.now()))

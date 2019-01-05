@@ -30,8 +30,16 @@ def image_process(img_src, img_path):
         # print(new_im.format, new_im.size, new_im.mode)
         new_img.save(img_path)
 
+        del img_file
+        del new_img
+        gc.collect()
+
     except:
         print('/---Warning:画像読み込みできなかったよ')
+
+    del br
+    gc.collect()
+    
 
 if __name__ == '__main__':
     print("このコードはインポートして使ってね。")

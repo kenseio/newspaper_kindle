@@ -10,7 +10,7 @@ import subprocess
 from send_from_gmail import create_message, send_gmail
 from delete_files import delete_html, delete_toc
 
-with open('secret.json') as sf:
+with open('/home/ubuntu/newspaper/newspaper_kindle/secret.json') as sf:
     data = json.load(sf)
 
 # 設定項目1：丸三証券のログインID・PWを変数に
@@ -186,7 +186,7 @@ for ppr_elm in ppr_tpl:
                     html.write('<hr>\n')
 
                     # 日付を入れる
-                    html.write('<div class="date">' + Srcs[i][j] + '</div>\n')
+                    html.write('<h5>' + Srcs[i][j] + '</h5>\n')
 
                     # 記事本文を入れる
                     html.write('<p>' + Txts[i][j] + '</p>\n')
@@ -235,7 +235,7 @@ with open(path, mode='a') as html:
 
 # pandocでdocxに変換
 print('/---docxファイル作成中')
-res = subprocess.run(['pandoc', path, '-o', root + ppr_name + '.docx'])
+res = subprocess.run(['pandoc', path, '-o', root + ppr_name + '.docx', '--reference-doc=/home/ubuntu/newspaper/reference/reference.docx'])
 
 # Kindleへメールで送る
 subject = ppr_name
