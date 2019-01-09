@@ -20,3 +20,5 @@ def delete_img(root):
         if os.path.isfile(p):
             os.remove(p)
 
+if __name__ == '__main__':
+    print("このコードはインポートして使ってね。")
