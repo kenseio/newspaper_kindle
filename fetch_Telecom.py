@@ -148,7 +148,7 @@ for ppr_elm in ppr_tpl:
                         print(br.find('h2').text)
                         art_text = br.find('div', class_='col col10 artCSS_Highlight_on').find('p')
                         art_text = str(art_text)  # 注:文字型に変換してあげないとoutertextを扱えない
-                        art_text = re.sub(r'</?p?(br)?/?>', '\n', art_text)  # pタグとbrタグを改行に置換
+                        art_text = re.sub(r'</?p?>', '\n', art_text)  # pタグを改行に置換。brタグはあとで作るHTMLに残す。
                         Txt.append(art_text)
                     except:
                         pass
