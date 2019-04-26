@@ -8,6 +8,7 @@ from pytz import timezone
 from robobrowser import RoboBrowser
 import subprocess
 import gc
+import boto3
 
 from pil_for_kindle import image_process
 from send_from_gmail import create_message, send_gmail
@@ -246,6 +247,12 @@ print('/---メール送信中：' + ppr_name)
 
 msg = create_message(gmail_id, kindle_add, subject, body, mine, attach_file)
 send_gmail(gmail_id, kindle_add, msg)
+
+# S3へアップロード
+print('/---S3にアップロード中：' + ppr_name)
+s3 = boto3.resource('s3')
+bucket = s3.Bucket('newspaper-kensei')
+bucket.upload_file(filepath, 'AsiaNikkei/' + filename)
 
 # 今回実行日時をファイルに書き込む
 fileLastDate = open('/home/ubuntu/newspaper/newspaper_kindle/LastSubmitDate_AsiaNikkei.txt', 'w')

@@ -6,6 +6,7 @@ import datetime
 import json
 from robobrowser import RoboBrowser
 import subprocess
+import boto3
 
 from send_from_gmail import create_message, send_gmail
 from delete_files import delete_html, delete_toc
@@ -248,6 +249,12 @@ print('/---メール送信中：' + ppr_name)
 
 msg = create_message(gmail_id, kindle_add, subject, body, mine, attach_file)
 send_gmail(gmail_id, kindle_add, msg)
+
+# S3へアップロード
+print('/---S3にアップロード中：' + ppr_name)
+s3 = boto3.resource('s3')
+bucket = s3.Bucket('newspaper-kensei')
+bucket.upload_file(filepath, 'Telecom/' + filename)
 
 # ログアウト
 br.open('https://trade.03trade.com/web/cmnCauSysLgoAction.do')
