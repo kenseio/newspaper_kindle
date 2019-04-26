@@ -62,7 +62,8 @@ toc.write("<ul>\n")
 for strSectionUrl in lstSectionURL:
     print('/---' + strSectionUrl.replace('/', ' ') + 'を実行します')
     # 記事のURLを取得しリストに格納
-    # OpinionとLifeは1ページだけ。他は1ページ目と2ページ目を読み込む。
+    # OpinionとLifeは1ページだけ。
+    # ほかも、メモリリークするので1ページだけ読み込む
     lstArticleUrl = []
     if strSectionUrl in ['/opinion/', '/life/']:
         br.open(strRoot + strSectionUrl)
@@ -73,7 +74,7 @@ for strSectionUrl in lstSectionURL:
             lstArticleUrl.append(objHgroup.find('p').find('a')['href'])
 
     else:
-        for i in range(2):
+        for i in range(1):
             br.open(strRoot + strSectionUrl + 'page/' + str(i+1) + '/')
             strCntnt = br.find('h1', class_='page-title').text
             strCntnt = re.sub(r"\n|  ", '', strCntnt).strip()
