@@ -266,5 +266,6 @@ print(prompt)
 print('/---不要ファイル削除中')
 delete_html(path)
 delete_toc(root)
+delete_docx(filepath)
 
 print('/---処理を終了しました。')
