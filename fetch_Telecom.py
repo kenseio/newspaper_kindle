@@ -32,8 +32,8 @@ ppr_tpl = ('NKM', 'NSS', 'NRS', 'NKL')
 # 設定項目3:何日前の新聞を取得するか
 ppr_bfr = 0
 
-# 設定項目4:ファイルの保存フォルダを指定
-root = '/home/ubuntu/newspaper/Telecom/'
+# 設定項目4:作業フォルダを指定
+root = '/home/ubuntu/newspaper/work/'
 
 # 設定項目5:GmailのID
 gmail_id = data['gmail_id']

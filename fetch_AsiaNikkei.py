@@ -18,7 +18,7 @@ from delete_files import delete_html, delete_toc, delete_img
 with open('/home/ubuntu/newspaper/newspaper_kindle/secret.json') as sf:
     data = json.load(sf)
 
-root = '/home/ubuntu/newspaper/AsiaNikkei/'
+root = '/home/ubuntu/newspaper/work/'
 
 # 設定項目1:見出しページをリストに格納
 lstSectionURL = ['/Editor-s-Picks/', '/Business/', '/Economy/', '/Politics/']
