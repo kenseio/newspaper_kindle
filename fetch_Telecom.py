@@ -33,7 +33,7 @@ ppr_tpl = ('NKM', 'NSS', 'NRS', 'NKL')
 ppr_bfr = 0
 
 # 設定項目4:ファイルの保存フォルダを指定
-root = '/home/ubuntu/newspaper/store_Telecom/'
+root = '/home/ubuntu/newspaper/Telecom/'
 
 # 設定項目5:GmailのID
 gmail_id = data['gmail_id']
