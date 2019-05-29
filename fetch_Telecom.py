@@ -9,7 +9,7 @@ import subprocess
 import boto3
 
 from send_from_gmail import create_message, send_gmail
-from delete_files import delete_html, delete_toc
+from delete_files import delete_html, delete_toc, delete_docx
 
 with open('/home/ubuntu/newspaper/newspaper_kindle/secret.json') as sf:
     data = json.load(sf)

@@ -11,7 +11,7 @@ import boto3
 
 from pil_for_kindle import image_process
 from send_from_gmail import create_message, send_gmail
-from delete_files import delete_html, delete_toc, delete_img
+from delete_files import delete_html, delete_toc, delete_img, delete_docx
 
 with open('/home/ubuntu/newspaper/newspaper_kindle/secret.json') as sf:
     data = json.load(sf)
