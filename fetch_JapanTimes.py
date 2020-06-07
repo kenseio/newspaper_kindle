@@ -104,6 +104,7 @@ for strSectionUrl in lstSectionURL:
 
         objArticle = br.find('article', role='main')  # 記事のタイトル・画像・記者など
         objBody = br.find('div', id='jtarticle')  # 記事本文
+
         try:
             dtArticleDate = objArticle.find('time')['datetime'].replace('T', ' ')[0:19]
 
@@ -153,6 +154,11 @@ for strSectionUrl in lstSectionURL:
                 pass
 
             # 記事本文
+            # 記事本文が空だったらスキップ
+            if objBody is None:
+                print("/---記事本文無し。 スキップします")
+                continue
+
             for objElm in objBody.find_all('p'):
                 strArticleText = objElm.text.strip()
                 strArticleText = strArticleText.replace('’', '\'')
